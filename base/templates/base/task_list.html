@@ -1,0 +1,72 @@
+{% extends 'base/main.html' %}
+
+{% block content %}
+
+<header class="p-3 text-bg-dark">
+    <div class="container">
+      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 fs-4 text-white text-decoration-none">
+            <i class="bi bi-list-task me-3"></i> To-do App
+        </a>
+
+        <p class="nav col-12 col-lg-auto me-lg-auto justify-content-center align-items-center ms-2"></p>
+
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
+          <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
+        </form>
+
+        <div class="text-end">
+            {% if request.user.is_authenticated %}
+                <a href={% url 'logout' %} class="text-secondary text-decoration-none">Logout</a>
+            {% else %}
+                <a href={% url 'login' %} class="btn btn-outline-light me-2">Login</a>
+                <a href={% url 'register' %} class="btn btn-warning">Register</a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+</header>
+
+<div class="container pt-4">
+
+    <div class="d-flex justify-content-between align-items-center border-bottom">
+        <p class="fs-3 fw-bold">Hello <span class="text-warning">{{ request.user|title }}</span>.</p>
+        <p class="fs-5 text-secondary">You have <span class="fst-italic text-dark">{{count}}</span> incomplete item{{count|pluralize}}.</p>
+        <a href={% url 'task-create' %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task</a>
+    </div>
+
+
+    <table class="table table-striped">
+        <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th><i class="bi bi-pencil btn btn-success btn-sm"></i></th>
+            <th><i class="bi bi-trash3 btn btn-dark btn-sm"></i></th>
+        </tr>
+
+        {% for task in tasks %}
+        <tr>
+            <td>{{task.id}}</td>
+            <td>{{task.title}}</td>
+            <td>
+                {% if task.complete %}
+                    <span class="badge bg-success">DONE</span>
+                {% else %}
+                    <span class="badge bg-danger">IN PROGRESS</span>
+                {% endif %}</td>
+            <td><a href={% url 'task-update' task.id %} class="text-decoration-none">Edit</a></td>
+            <td><a href={% url 'task-delete' task.id %} class="text-decoration-none">Delete</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td><h3>No task is defined</h3></td>
+        </tr>
+            
+        {% endfor %}
+    </table>
+
+
+</div>
+
+{% endblock content %}
