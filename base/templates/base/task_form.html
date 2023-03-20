@@ -1,16 +1,23 @@
 {% extends 'base/main.html' %}
 
 {% block content %}
-
-
-<h1>Task Create</h1>
-<a href={% url 'tasks' %}>Go back</a>
-
-<form method="POST" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-
-    <input type="submit" value="Submit">
-</form>
-
+<div class="container pt-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <a href={% url 'tasks' %} class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-chevron-left me-2"></i>Go back
+        </a>
+        <h1 class="text-center">{{ header }}</h1>
+        <div></div>
+    </div>
+    
+    <form method="POST" action="" class="p-5 rounded-4 shadow" id="form">
+        {% csrf_token %}
+        {{ form.as_div }}
+    {% if 'Edit' in header %}
+        <input type="submit" value="Edit">    
+    {% else %}
+        <input type="submit" value="Create">
+    {% endif %}
+    </form>
+</div>
 {% endblock content %}
