@@ -3,15 +3,15 @@
 {% block content %}
 
 
-<h1>Register</h1>
 
-<form method="POST" action="">
+<form method="POST" class="w-50 my-4 mx-auto p-5 rounded-2 shadow" id="form">
+    <h1 class="text-center mb-3 text-warning">Register</h1>
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.as_div }}
 
     <input type="submit" value="Submit">
 </form>
 
-<p>Already have an account? <a href={% url 'login' %}>Login</a></p>
+<p class="text-center">Already have an account? <a href={% url 'login' %} class="link-primary text-decoration-none">Login</a></p>
 
 {% endblock content %}

@@ -1,4 +1,4 @@
-{% comment %} <!DOCTYPE html>
+<!DOCTYPE html>
 {% load static %}
 <html>
     <head>
@@ -15,7 +15,7 @@
         {% block content %}
         {% endblock content %}
 
-        <script type="text/javascript" src={% static 'js/bootstrap.bundle.min.js' %}></script>
+    <script type="text/javascript" src={% static 'js/bootstrap.bundle.min.js' %}></script>
     </body>
     <script>
         const form = document.getElementById('form');
@@ -44,4 +44,4 @@
         }
     </script>
 
-</html> {% endcomment %}
+</html>
