@@ -9,7 +9,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Task
+from .models import Task, TaskList
 
 class CustomLoginView(LoginView):
     template_name = 'base/login.html'
@@ -38,18 +38,19 @@ class RegisterPage(FormView):
         return super(RegisterPage, self).get(*args, **kwargs)
 
 
-class TaskList(LoginRequiredMixin, ListView):
-    model = Task
-    context_object_name = 'tasks'
+class ToDoList(LoginRequiredMixin, ListView):
+    model = TaskList
+    context_object_name = 'taskLists'
+    template_name = 'base/task_list.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["tasks"] = context['tasks'].filter(user=self.request.user)
-        context["count"] = context['tasks'].filter(complete=False).count()
+        context["taskLists"] = context['taskLists'].filter(user=self.request.user)
+        context["count"] = 5#context['taskLists'].filter(complete=False).count()
         
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['tasks'] = context['tasks'].filter(title__startswith=search_input)
+            context['taskLists'] = context['taskLists'].filter(title__startswith=search_input)
             
         context['search_input'] = search_input
         return context
