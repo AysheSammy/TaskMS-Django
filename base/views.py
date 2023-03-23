@@ -40,21 +40,79 @@ class RegisterPage(FormView):
 
 class ToDoList(LoginRequiredMixin, ListView):
     model = TaskList
-    context_object_name = 'taskLists'
+    context_object_name = 'task_lists'
     template_name = 'base/task_list.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["taskLists"] = context['taskLists'].filter(user=self.request.user)
-        context["count"] = 5#context['taskLists'].filter(complete=False).count()
+        context["task_lists"] = context['task_lists'].filter(user=self.request.user)
         
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
-            context['taskLists'] = context['taskLists'].filter(title__startswith=search_input)
+            context['task_lists'] = context['task_lists'].filter(title__startswith=search_input)
             
         context['search_input'] = search_input
         return context
+
+
+class ToDoListdetail(LoginRequiredMixin, DetailView):
+    model = TaskList
+    context_object_name = 'task_list'
+    template_name = 'base/task.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
+        context['tasks'] = Task.objects.filter(task_list=context['task_list'].id)
+        context['task_count'] = context['tasks'].filter(complete=False).count()
+        
+        search_input = self.request.GET.get('search-area') or ''
+        if search_input:
+            context['task_lists'] = context['task_lists'].filter(title__startswith=search_input)
+            
+        context['search_input'] = search_input
+        return context
+
+
+class ToDoListCreate(LoginRequiredMixin, CreateView):
+    model = TaskList
+    fields = ['title']
+    template_name = 'base/task_form.html'
+    success_url = reverse_lazy('tasks')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
+        context['header'] = 'Task list create'
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ToDoListCreate, self).form_valid(form)  
+
+
+class ToDoListUpdate(LoginRequiredMixin, UpdateView):
+    model = TaskList
+    fields = ['title']
+    template_name = 'base/task_form.html'
+    success_url = reverse_lazy('tasks')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
+        context['header'] = 'Edit task list'
+        return context
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ToDoListUpdate, self).form_valid(form)  
+
+
+class ToDoListDelete(LoginRequiredMixin, DeleteView):
+    model = TaskList
+    template_name = 'base/task_confirm_delete.html'
+    context_object_name = 'task_list'
+    success_url = reverse_lazy('tasks')
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -65,17 +123,22 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 
 class TaskCreate(LoginRequiredMixin, CreateView):
     model = Task
+    template_name = 'base/task_form.html'
     fields = ['title', 'description', 'complete']
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('tasks')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
         context['header'] = 'Task create'
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(TaskCreate, self).form_valid(form)    
+        form.instance.task_list = TaskList.objects.get(id=self.kwargs['task_list_id'])
+        return super(TaskCreate, self).form_valid(form)
 
 
 class TaskUpdate(LoginRequiredMixin, UpdateView):
@@ -85,13 +148,14 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
         context['header'] = 'Edit task'
         return context
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(TaskUpdate, self).form_valid(form)
-    
+
 
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task

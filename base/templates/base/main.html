@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% comment %} <!DOCTYPE html>
 {% load static %}
 <html>
     <head>
@@ -10,16 +10,13 @@
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap.min.css' %} />
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap-icons.css' %} />
     </head>
-    <body >
-        
-        <div class="container-fluid m-0 p-0">
-            {% block content %}
-            {% endblock content %}
-        </div>
+    <body class="container-fluid m-0 p-0 text-bg-dark">
+
+        {% block content %}
+        {% endblock content %}
 
         <script type="text/javascript" src={% static 'js/bootstrap.bundle.min.js' %}></script>
     </body>
-
     <script>
         const form = document.getElementById('form');
     
@@ -47,4 +44,4 @@
         }
     </script>
 
-</html>
+</html> {% endcomment %}

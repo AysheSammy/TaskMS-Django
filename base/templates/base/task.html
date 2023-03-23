@@ -1,7 +1,38 @@
-{% extends 'base/main.html' %}
+{% extends 'base/task_list.html' %}
 
 {% block content %}
 
-<h1>Task: {{ task }}</h1>
+<div class="d-flex justify-content-between align-items-center border-bottom">
+    <p class=""></p>
+    <p class="fs-5 text-secondary">You have <span class="fst-italic text-light">{{task_count}}</span> incomplete item{{task_count|pluralize}}.</p>
+    <a href={% url 'task-create' task_list.id %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task</a>
+</div>
+
+<table class="table table-striped table-dark">
+    <tr>
+        <th>#</th>
+        <th>Title</th>
+        <th>Status</th>
+        <th><i class="bi bi-pencil btn btn-success btn-sm"></i></th>
+        <th><i class="bi bi-trash3 btn btn-dark btn-sm"></i></th>
+    </tr>
+
+    {% for task in tasks %}
+    <tr>
+        <td>{{task.id}}</td>
+        <td>{{task.title}}</td>
+        <td>
+        complete
+        </td>
+        <td><a href={% url 'task-update' task.id %} class="text-decoration-none">Edit</a></td>
+        <td><a href={% url 'task-delete' task.id %} class="text-decoration-none">Delete</a></td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="5"><h3>No task is defined</h3></td>
+    </tr>
+        
+    {% endfor %}
+</table>
 
 {% endblock content %}

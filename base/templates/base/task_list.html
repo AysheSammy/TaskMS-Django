@@ -1,125 +1,102 @@
-{% extends 'base/main.html' %}
+<!DOCTYPE html>
+{% load static %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>To Do List</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap.min.css' %} />
+        <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap-icons.css' %} />
+    </head>
+    <body class="container-fluid m-0 p-0 text-bg-dark">
 
-{% block content %}
-
-<header class="p-3 text-bg-dark">
-    <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 fs-4 text-white text-decoration-none">
-            <i class="bi bi-list-task me-3"></i> To-do App
-        </a>
-
-        <p class="nav col-12 col-lg-auto me-lg-auto justify-content-center align-items-center ms-2"></p>
-
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
-          <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
-        </form>
-
-        <div class="text-end">
-            {% if request.user.is_authenticated %}
-                <a href={% url 'logout' %} class="text-secondary text-decoration-none">Logout</a>
-            {% else %}
-                <a href={% url 'login' %} class="btn btn-outline-light me-2">Login</a>
-                <a href={% url 'register' %} class="btn btn-warning">Register</a>
-            {% endif %}
+        <header class="p-3 text-bg-dark">
+            <div class="container">
+              <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 fs-4 text-white text-decoration-none">
+                    <i class="bi bi-list-task me-3"></i> To-do App
+                </a>
+        
+                <p class="nav col-12 col-lg-auto me-lg-auto justify-content-center align-items-center ms-2"></p>
+        
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
+                  <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
+                </form>
+        
+                <div class="text-end">
+                    {% if request.user.is_authenticated %}
+                        <a href={% url 'logout' %} class="text-secondary text-decoration-none">Logout</a>
+                    {% else %}
+                        <a href={% url 'login' %} class="btn btn-outline-light me-2">Login</a>
+                        <a href={% url 'register' %} class="btn btn-warning">Register</a>
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+        </header>
+        
+        <div class="container-xxl bd-gutter bd-layout d-flex" style="min-height: 100vh;">
+            <div class="sidebar">
+                <div class="d-flex flex-column flex-shrink-0 py-3 pe-3 text-bg-dark" style="width: 280px;">
+                    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                        <span class="fs-3 fw-bold">Hello <span class="text-warning">{{ request.user|title }}</span>.</span>
+                    </a>
+                    <hr>
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        {% for task_list in task_lists %}
+                        <li class="nav-item d-flex justify-content-between align-items-center mb-2">
+                            <a href="{% url 'task-list' task_list.id %}" class="nav-link text-light" aria-current="{{task_list}}">{{task_list|title}}</a>
+                            <span class="btn btn-success btn-sm">Edit</span>
+                        </li>
+                        {% empty %}
+                        <p>No lists are created</p>
+                        <li>
+                            <a href={% url 'task-list-create' %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task List</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <a href={% url 'task-list-create' %} class="btn btn-warning">
+                        <i class="bi bi-plus-circle"></i> Task List
+                    </a>
+                </div>
+            </div>
+        
+            <div class="container pt-4">
+                {% block content %}
+                <p></p>
+                {% endblock content %}
+            </div>
         </div>
-      </div>
-    </div>
-</header>
 
+        <script type="text/javascript" src={% static 'js/bootstrap.bundle.min.js' %}></script>
+    </body>
+    <script>
+        const form = document.getElementById('form');
+        if (form != null){
+            for(var child of form.children){
+                if (child.nodeName == 'DIV'){
+                    child.className += 'd-flex justify-content-start align-items-center mb-3';
+                    console.log(child.children)
+                    for(var input of child.children){
+                        if (input.nodeName == 'LABEL'){
+                            input.className += 'form-label w-25 fw-semibold'
+                        } else if (input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA'){
+                            if (input.type != "checkbox" && input.type != "radio"){
+                                input.className += 'form-control w-75'
+                            }
+                            else{
+                                input.className += 'form-check-input'
+                            }
+                        }
+                    }
+                } else if (child.nodeName == 'INPUT' && child.type == 'submit'){
+                    child.className += 'btn btn-primary w-100';
+                }
+            }
+        }
+    </script>
 
-<div class="sidebar">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-          <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-          <span class="fs-4">Sidebar</span>
-        </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
-              Home
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-              Dashboard
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-              Orders
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-              Products
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-              Customers
-            </a>
-          </li>
-        </ul>
-        <hr>
-        <div class="dropdown">
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>mdo</strong>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul>
-        </div>
-      </div> 
-</div>
-<div class="container pt-4">
-
-    <div class="d-flex justify-content-between align-items-center border-bottom">
-        <p class="fs-3 fw-bold">Hello <span class="text-warning">{{ request.user|title }}</span>.</p>
-        <p class="fs-5 text-secondary">You have <span class="fst-italic text-dark">{{count}}</span> incomplete item{{count|pluralize}}.</p>
-        <a href={% url 'task-create' %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task</a>
-    </div>
-
-
-    <table class="table table-striped">
-        <tr>
-            <th>#</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th><i class="bi bi-pencil btn btn-success btn-sm"></i></th>
-            <th><i class="bi bi-trash3 btn btn-dark btn-sm"></i></th>
-        </tr>
-
-        {% for task in tasks %}
-        <tr>
-            <td>{{task.id}}</td>
-            <td>{{task.title}}</td>
-            <td>
-               complete
-            </td>
-            <td><a href={% url 'task-update' task.id %} class="text-decoration-none">Edit</a></td>
-            <td><a href={% url 'task-delete' task.id %} class="text-decoration-none">Delete</a></td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td><h3>No task is defined</h3></td>
-        </tr>
-            
-        {% endfor %}
-    </table>
-
-
-</div>
-
-{% endblock content %}
+</html>
