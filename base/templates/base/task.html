@@ -13,8 +13,12 @@
         <th>#</th>
         <th>Title</th>
         <th>Status</th>
-        <th><i class="bi bi-pencil btn btn-success btn-sm"></i></th>
-        <th><i class="bi bi-trash3 btn btn-dark btn-sm"></i></th>
+        <th>
+            <span class="badge bg-success"><i class="bi bi-pencil "></i></span>
+        </th>
+        <th>
+            <span class="badge bg-dark"><i class="bi bi-trash3  text-light"></i></span>
+        </th>
     </tr>
 
     {% for task in tasks %}
@@ -22,7 +26,11 @@
         <td>{{task.id}}</td>
         <td>{{task.title}}</td>
         <td>
-        complete
+            {% if task.complete %}
+                <span class="badge bg-success"><i class="bi bi-check"></i> DONE</span>
+            {% else %}
+                <span class="badge bg-info"><i class="bi bi-x-lg"></i> IN PROGRESS</span>
+            {% endif %}
         </td>
         <td><a href={% url 'task-update' task.id %} class="text-decoration-none">Edit</a></td>
         <td><a href={% url 'task-delete' task.id %} class="text-decoration-none">Delete</a></td>
