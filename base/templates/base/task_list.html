@@ -22,8 +22,9 @@
                 <p class="nav col-12 col-lg-auto me-lg-auto justify-content-center align-items-center ms-2"></p>
         
                 <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
-                  <input type="search" class="form-control form-control-dark text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
+                  <input type="search" class="form-control form-control-dark form-control-sm text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
                 </form>
+                <a href="{% url 'task-list' 1 %}" class="btn btn-danger btn-sm me-2">Clear</a>
         
                 <div class="text-end">
                     {% if request.user.is_authenticated %}
@@ -46,9 +47,8 @@
                     <hr>
                     <ul class="nav nav-pills flex-column mb-auto">
                         {% for task_list in task_lists %}
-                        <li class="nav-item d-flex justify-content-between align-items-center mb-2">
-                            <a href="{% url 'task-list' task_list.id %}" class="nav-link text-light" aria-current="{{task_list}}">{{task_list}}</a>
-                            <a href="{% url 'task-list-update' task_list.id %}" class="btn btn-success btn-sm">Edit</a>
+                        <li class="nav-item d-flex justify-content-between align-items-center rounded-3 mb-2{% if current_list == task_list.id %} bg-warning{% endif %}">
+                            <a href="{% url 'task-list' task_list.id %}" class="nav-link{% if current_list == task_list.id %} text-dark {% else %} text-light {% endif %}" aria-current="{{task_list}}">{{task_list}}</a>
                         </li>
                         {% empty %}
                         <p>No lists are created</p>
@@ -58,7 +58,7 @@
                         {% endfor %}
                     </ul>
                     <hr>
-                    <a href={% url 'task-list-create' %} class="btn btn-warning">
+                    <a href={% url 'task-list-create' %} class="btn btn-outline-warning btn-sm">
                         <i class="bi bi-plus-circle"></i> Task List
                     </a>
                 </div>

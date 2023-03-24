@@ -3,9 +3,9 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center border-bottom">
-    <p class=""></p>
+    <a href="{% url 'task-list-update' object.id %}" class="fs-4 text-light text-decoration-none">{{object}} <i class="bi bi-pencil fs-6"></i></a>
     <p class="fs-5 text-secondary">You have <span class="fst-italic text-light">{{task_count}}</span> incomplete item{{task_count|pluralize}}.</p>
-    <a href={% url 'task-create' task_list.id %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task</a>
+    <a href={% url 'task-create' task_list.id %} class="btn btn-danger btn-sm"><i class="bi bi-plus-circle"></i> Task</a>
 </div>
 
 <table class="table table-striped table-dark">
@@ -39,5 +39,7 @@
     <tr><td colspan="5"><h3>No task is defined</h3></td></tr>        
     {% endfor %}
 </table>
+
+<a href={% url 'task-list-delete' object.id %} class="float-end text-decoration-none btn btn-secondary btn-sm">Delete</a>
 
 {% endblock content %}

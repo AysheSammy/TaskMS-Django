@@ -17,7 +17,8 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     
     def get_success_url(self):
-        return reverse_lazy('tasks')
+        first_task_id = TaskList.objects.filter(user=self.request.user)[0].id
+        return reverse_lazy('task-list', args=[first_task_id])
 
 
 class RegisterPage(FormView):
@@ -45,7 +46,7 @@ class ToDoList(LoginRequiredMixin, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["task_lists"] = context['task_lists'].filter(user=self.request.user)
+        context["task_lists"] = TaskList.objects.filter(user=self.request.user)
         
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
@@ -65,6 +66,7 @@ class ToDoListdetail(LoginRequiredMixin, DetailView):
         context["task_lists"] = TaskList.objects.filter(user=self.request.user)
         context['tasks'] = Task.objects.filter(task_list=context['task_list'].id)
         context['task_count'] = context['tasks'].filter(complete=False).count()
+        context['current_list'] = self.object.id
         
         search_input = self.request.GET.get('search-area') or ''
         if search_input:
@@ -78,8 +80,10 @@ class ToDoListCreate(LoginRequiredMixin, CreateView):
     model = TaskList
     fields = ['title']
     template_name = 'base/task_form.html'
-    success_url = reverse_lazy('tasks')
-    
+
+    def get_success_url(self):
+        return reverse_lazy('task-list', args=[self.object.id])
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["task_lists"] = TaskList.objects.filter(user=self.request.user)
@@ -88,14 +92,16 @@ class ToDoListCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(ToDoListCreate, self).form_valid(form)  
+        return super(ToDoListCreate, self).form_valid(form)
 
 
 class ToDoListUpdate(LoginRequiredMixin, UpdateView):
     model = TaskList
     fields = ['title']
     template_name = 'base/task_form.html'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('task-list', args=[self.object.id])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -112,7 +118,10 @@ class ToDoListDelete(LoginRequiredMixin, DeleteView):
     model = TaskList
     template_name = 'base/task_confirm_delete.html'
     context_object_name = 'task'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        first_task_id = TaskList.objects.filter(user=self.request.user)[0].id
+        return reverse_lazy('task-list', args=[first_task_id])
 
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -127,7 +136,7 @@ class TaskCreate(LoginRequiredMixin, CreateView):
     fields = ['title', 'description', 'complete']
 
     def get_success_url(self):
-        return reverse_lazy('tasks')
+        return reverse_lazy('task-list', args=[self.object.task_list.id])
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -144,7 +153,9 @@ class TaskCreate(LoginRequiredMixin, CreateView):
 class TaskUpdate(LoginRequiredMixin, UpdateView):
     model = Task
     fields = ['title', 'description', 'complete']
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('task-list', args=[self.object.task_list.id])
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -160,4 +171,6 @@ class TaskUpdate(LoginRequiredMixin, UpdateView):
 class TaskDelete(LoginRequiredMixin, DeleteView):
     model = Task
     context_object_name = 'task'
-    success_url = reverse_lazy('tasks')
+
+    def get_success_url(self):
+        return reverse_lazy('task-list', args=[self.object.task_list.id])
