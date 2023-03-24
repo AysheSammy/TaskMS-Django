@@ -111,7 +111,7 @@ class ToDoListUpdate(LoginRequiredMixin, UpdateView):
 class ToDoListDelete(LoginRequiredMixin, DeleteView):
     model = TaskList
     template_name = 'base/task_confirm_delete.html'
-    context_object_name = 'task_list'
+    context_object_name = 'task'
     success_url = reverse_lazy('tasks')
 
 

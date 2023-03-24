@@ -11,7 +11,12 @@
         {% csrf_token %}
         {{ form.as_div }}
         {% if 'Edit' in header %}
-            <input type="submit" value="Edit">    
+        <div class="d-flex justify-content-between align-items-center">
+            {% if 'list' in header|lower %}
+            <a href={% url 'task-list-delete' object.id %} class="d-block text-decoration-none btn btn-secondary">Delete</a>
+        {% endif %}
+            <input type="submit" value="Edit" class="btn btn-primary ">
+        </div>
         {% else %}
             <input type="submit" value="Create">
         {% endif %}

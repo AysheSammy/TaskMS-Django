@@ -2,8 +2,6 @@
 
 {% block content %}
 
-
-
 <form method="POST" class="w-50 my-4 mx-auto p-5 rounded-2 shadow" id="form">
     <h1 class="text-center mb-3 text-warning">Register</h1>
     {% csrf_token %}
@@ -12,6 +10,8 @@
     <input type="submit" value="Submit">
 </form>
 
-<p class="text-center">Already have an account? <a href={% url 'login' %} class="link-primary text-decoration-none">Login</a></p>
+<p class="text-center">
+    Already have an account? <a href={% url 'login' %} class="link-primary text-decoration-none">Login</a>
+</p>
 
 {% endblock content %}
