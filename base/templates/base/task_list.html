@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap.min.css' %} />
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap-icons.css' %} />
+        <link rel="stylesheet" type="text/css" href={% static 'style/style.css' %} />
     </head>
     <body class="container-fluid m-0 p-0 text-bg-dark">
 
@@ -21,10 +22,10 @@
         
                 <p class="nav col-12 col-lg-auto me-lg-auto justify-content-center align-items-center ms-2"></p>
         
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" method="GET">
-                  <input type="search" class="form-control form-control-dark form-control-sm text-bg-dark" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
+                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 d-flex" role="search" method="GET">
+                  <input type="search" class="form-control form-control-dark form-control-sm text-bg-dark me-2" placeholder="Search..." name="search-area" value="{{search_input}}" aria-label="Search">
+                  <a href="{% url 'task-list' 1 %}" class="btn btn-danger btn-sm">Clear</a>
                 </form>
-                <a href="{% url 'task-list' 1 %}" class="btn btn-danger btn-sm me-2">Clear</a>
         
                 <div class="text-end">
                     {% if request.user.is_authenticated %}
@@ -52,9 +53,6 @@
                         </li>
                         {% empty %}
                         <p>No lists are created</p>
-                        <li>
-                            <a href={% url 'task-list-create' %} class="btn btn-danger"><i class="bi bi-plus-circle"></i> Task List</a>
-                        </li>
                         {% endfor %}
                     </ul>
                     <hr>
@@ -85,15 +83,13 @@
                             input.className += 'form-label w-25 fw-semibold'
                         } else if (input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA'){
                             if (input.type != "checkbox" && input.type != "radio"){
-                                input.className += 'form-control w-75'
+                                input.className += 'form-control form-control-sm'
                             }
                             else{
                                 input.className += 'form-check-input'
                             }
                         }
                     }
-                } else if (child.nodeName == 'INPUT' && child.type == 'submit'){
-                    child.className += 'btn btn-primary w-100';
                 }
             }
         }

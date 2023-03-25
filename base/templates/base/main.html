@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap.min.css' %} />
         <link rel="stylesheet" type="text/css" href={% static 'style/bootstrap-icons.css' %} />
+        <link rel="stylesheet" type="text/css" href={% static 'style/style.css' %} />
     </head>
     <body class="container-fluid m-0 p-0 text-bg-dark">
 
@@ -23,22 +24,37 @@
         if (form != null){
             for(var child of form.children){
                 if (child.nodeName == 'DIV'){
-                    child.className += 'd-flex justify-content-start align-items-center mb-3';
-                    console.log(child.children)
-                    for(var input of child.children){
-                        if (input.nodeName == 'LABEL'){
-                            input.className += 'form-label w-25 fw-semibold'
-                        } else if (input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA'){
-                            if (input.type != "checkbox" && input.type != "radio"){
-                                input.className += 'form-control w-75'
+                    if(child.children[1].nodeName == 'DIV' && child.children[1].className.includes('helptext')){
+                        child.className += 'd-flex flex-column justify-content-center align-items-start mb-3'
+                        for(var input of child.children){
+                            if (input.nodeName == 'LABEL'){
+                                input.className += 'form-label fw-semibold'
+                            } else if (input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA'){
+                                if (input.type != "checkbox" && input.type != "radio"){
+                                    input.className += 'form-control';
+                                }
+                                else{
+                                    input.className += 'form-check-input';
+                                }
+                            } else if (input.nodeName == 'DIV' && input.className == 'helptext'){
+                                input.className += ' text-secondary mb-1';
                             }
-                            else{
-                                input.className += 'form-check-input'
+                        }
+                    } else {
+                        child.className += 'd-flex justify-content-start align-items-center mb-3';
+                        for(var input of child.children){
+                            if (input.nodeName == 'LABEL'){
+                                input.className += 'form-label fw-semibold w-25'
+                            } else if (input.nodeName == 'INPUT' || input.nodeName == 'TEXTAREA'){
+                                if (input.type != "checkbox" && input.type != "radio"){
+                                    input.className += 'form-control';
+                                }
+                                else{
+                                    input.className += 'form-check-input';
+                                }
                             }
                         }
                     }
-                } else if (child.nodeName == 'INPUT' && child.type == 'submit'){
-                    child.className += 'btn btn-primary w-100';
                 }
             }
         }

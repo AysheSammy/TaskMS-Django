@@ -4,19 +4,20 @@
 <div class="container pt-4" style="min-height: 100vh;">
     <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="text-center">{{ header }}</h1>
-        <div></div>
+        <div>
+            {% if 'Edit' in header %}
+            <a href={% url 'task-list-delete' object.id %} class="text-decoration-none btn btn-secondary btn-sm">Delete</a>
+            {% endif %}
+        </div>
     </div>
     
     <form method="POST" class="p-5 rounded-2 shadow" id="form">
         {% csrf_token %}
         {{ form.as_div }}
         {% if 'Edit' in header %}
-        <div class="d-flex justify-content-between align-items-center">
-            <a href={% url 'task-list-delete' object.id %} class="d-block text-decoration-none btn btn-secondary">Delete</a>
-            <input type="submit" value="Edit" class="btn btn-primary ">
-        </div>
+        <input type="submit" value="Edit" class="d-block w-50 m-auto mt-5 btn btn-primary btn-sm">
         {% else %}
-            <input type="submit" value="Create">
+            <input type="submit" value="Create" class="d-block w-50 m-auto mt-5 btn btn-primary btn-sm">
         {% endif %}
     </form>
 </div>
